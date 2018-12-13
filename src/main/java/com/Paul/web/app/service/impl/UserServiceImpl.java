@@ -4,6 +4,7 @@ import com.Paul.web.app.entity.Role;
 import com.Paul.web.app.entity.User;
 import com.Paul.web.app.repository.RoleRepository;
 import com.Paul.web.app.repository.UserRepository;
+import com.Paul.web.app.security.TokenHandler;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    TokenHandler tokenHandler;
+
     public User findUserByEmail(String email) {
 
         return userRepository.findByEmail(email);
@@ -38,5 +42,18 @@ public class UserServiceImpl implements UserService {
         newUser.setUserRoles(new HashSet<Role>(
                 Arrays.asList(roleRepository.findByName("USER"))));
         return userRepository.save(newUser);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User getCurrentUser(String token) {
+        User user = tokenHandler.parseUserFromToken(token).getUser();
+        String email = user.getEmail();
+        user = userRepository.findByEmail(user.getEmail());
+        return user;
     }
 }

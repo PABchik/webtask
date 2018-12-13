@@ -12,7 +12,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @NotEmpty
     @Column(unique = true, nullable = false)
@@ -32,9 +32,19 @@ public class User implements Serializable {
 
     private String lastname;
 
-
+    @ManyToOne
+    @JoinColumn(name = "organisation")
+    private Organisation organisation;
 
     public User() {
+    }
+
+    public Organisation getOrganisation() {
+        return organisation;
+    }
+
+    public void setOrganisation(Organisation organisation) {
+        this.organisation = organisation;
     }
 
     public String getFirstname() {
@@ -53,11 +63,11 @@ public class User implements Serializable {
         this.lastname = lastname;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
