@@ -33,6 +33,7 @@ public class User implements Serializable {
     private String lastname;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "organisation")
     private Organisation organisation;
 

@@ -11,4 +11,6 @@ public interface UserService {
     User registerNewUser(User newUser);
 
     User getCurrentUser(String token);
+
+    User getUserFromSecurityContext();
 }

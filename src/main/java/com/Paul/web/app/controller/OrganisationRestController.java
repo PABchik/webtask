@@ -7,6 +7,7 @@ import com.Paul.web.app.service.OrganisationService;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -39,6 +40,7 @@ public class OrganisationRestController {
 
         return organisation;
     }
+
 
     @GetMapping
     public ResponseEntity<Organisation> getOrganisation(@RequestHeader("jwt_header") String token) {

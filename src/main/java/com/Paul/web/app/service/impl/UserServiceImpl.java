@@ -5,8 +5,10 @@ import com.Paul.web.app.entity.User;
 import com.Paul.web.app.repository.RoleRepository;
 import com.Paul.web.app.repository.UserRepository;
 import com.Paul.web.app.security.TokenHandler;
+import com.Paul.web.app.security.UserDetails;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,5 +57,13 @@ public class UserServiceImpl implements UserService {
         String email = user.getEmail();
         user = userRepository.findByEmail(user.getEmail());
         return user;
+    }
+
+    @Override
+    public User getUserFromSecurityContext() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        userDetails.getUser().getEmail();
+        return new User();
     }
 }
