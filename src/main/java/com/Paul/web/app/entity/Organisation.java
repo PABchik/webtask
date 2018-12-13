@@ -1,5 +1,7 @@
 package com.Paul.web.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,10 +16,12 @@ public class Organisation {
     @Column(name = "owner_id")
     private int ownerId;
 
-    /*@OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
-    private Set<Group> groups = new HashSet<Group>();*/
+    @JsonIgnore
+    @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
+    private Set<Group> groups = new HashSet<Group>();
 
 //    @JsonSerialize(contentUsing = ParticipantSerializer.class)
+    @JsonIgnore
     @OneToMany(mappedBy="organisation", cascade = CascadeType.DETACH)
     private Set<User> participants = new HashSet<User>();
 
@@ -56,11 +60,11 @@ public class Organisation {
         this.participants = participants;
     }
 
-    /*public Set<Group> getGroups() {
+    public Set<Group> getGroups() {
         return groups;
     }
 
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
-    }*/
+    }
 }
