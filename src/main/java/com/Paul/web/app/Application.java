@@ -16,9 +16,4 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @GetMapping("/login")
-    public User getDetails() {
-        return ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getUser();
-    }
-
 }
