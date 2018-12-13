@@ -1,9 +1,9 @@
-package com.example.demo.filter;
+package com.Paul.web.app.filter;
 
-import com.example.demo.security.TokenHandler;
-import com.example.demo.entity.User;
-import com.example.demo.security.UserAuthentication;
-import com.example.demo.security.UserDetails;
+import com.Paul.web.app.security.TokenHandler;
+import com.Paul.web.app.entity.User;
+import com.Paul.web.app.security.UserAuthentication;
+import com.Paul.web.app.security.UserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,7 +30,11 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     public LoginFilter(String defaultFilterProcessesUrl,
                        UserDetailsService userDetailsService,
-                       AuthenticationManager authenticationManager, TokenHandler tokenHandler, Long expires, String header) {
+                       AuthenticationManager authenticationManager,
+                       TokenHandler tokenHandler,
+                       Long expires,
+                       String header) {
+
         super(new AntPathRequestMatcher(defaultFilterProcessesUrl, "POST"));
         this.userDetailsService = userDetailsService;
         this.tokenHandler = tokenHandler;
@@ -40,7 +44,9 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request,
+                                                HttpServletResponse response)
+            throws AuthenticationException {
 
         User user;
 
@@ -50,12 +56,18 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             throw new BadCredentialsException("Bad credentials");
         }
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getEmail(),
+                user.getPassword());
+
         return this.getAuthenticationManager().authenticate(token);
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) {
+
         UserDetails userWithAuthorities = (UserDetails) userDetailsService.loadUserByUsername(authResult.getName());
         UserAuthentication userAuthentication = new UserAuthentication(userWithAuthorities);
         addAuthentication(response, userAuthentication);

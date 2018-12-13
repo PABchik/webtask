@@ -1,7 +1,7 @@
-package com.example.demo;
+package com.Paul.web.app;
 
-import com.example.demo.entity.User;
-import com.example.demo.security.UserDetails;
+import com.Paul.web.app.entity.User;
+import com.Paul.web.app.security.UserDetails;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.core.context.SecurityContextHolder;

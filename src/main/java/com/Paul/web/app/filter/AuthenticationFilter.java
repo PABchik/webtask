@@ -1,8 +1,8 @@
-package com.example.demo.filter;
+package com.Paul.web.app.filter;
 
-import com.example.demo.security.TokenHandler;
-import com.example.demo.security.UserAuthentication;
-import com.example.demo.security.UserDetails;
+import com.Paul.web.app.security.TokenHandler;
+import com.Paul.web.app.security.UserAuthentication;
+import com.Paul.web.app.security.UserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

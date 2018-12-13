@@ -1,7 +1,7 @@
-package com.example.demo.security;
+package com.Paul.web.app.security;
 
-import com.example.demo.entity.Role;
-import com.example.demo.entity.User;
+import com.Paul.web.app.entity.Role;
+import com.Paul.web.app.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.beans.Transient;
@@ -90,7 +90,7 @@ public class UserDetails extends User implements org.springframework.security.co
         }
 
         private static UserGrantedAuthority fromRole(Role role) {
-            return new UserGrantedAuthority("ROLE_" + role.getName());
+            return new UserGrantedAuthority(role.getName());
         }
 
     }

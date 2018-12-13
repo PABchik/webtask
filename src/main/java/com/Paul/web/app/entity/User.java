@@ -1,4 +1,6 @@
-package com.example.demo.entity;
+package com.Paul.web.app.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;

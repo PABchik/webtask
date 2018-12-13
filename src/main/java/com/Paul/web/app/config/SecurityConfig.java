@@ -1,8 +1,8 @@
-package com.example.demo.config;
+package com.Paul.web.app.config;
 
-import com.example.demo.security.TokenHandler;
-import com.example.demo.filter.AuthenticationFilter;
-import com.example.demo.filter.LoginFilter;
+import com.Paul.web.app.filter.AuthenticationFilter;
+import com.Paul.web.app.filter.LoginFilter;
+import com.Paul.web.app.security.TokenHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
