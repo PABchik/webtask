@@ -65,8 +65,8 @@ public class UserServiceImpl implements UserService {
     public User getUserFromSecurityContext() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
-        userDetails.getUser().getEmail();
-        return new User();
+        return userRepository.findByEmail(userDetails.getUser().getEmail());
+
     }
 
     @Override

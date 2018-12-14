@@ -5,12 +5,14 @@ import com.Paul.web.app.entity.Organisation;
 import com.Paul.web.app.entity.User;
 import com.Paul.web.app.exception.BuisnessException;
 import com.Paul.web.app.repository.GroupRepository;
+import com.Paul.web.app.repository.RoleRepository;
 import com.Paul.web.app.service.GroupService;
 import com.Paul.web.app.service.OrganisationService;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Service
@@ -25,6 +27,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public Group createGroup(Group newGroup, User currentAdmin) {
@@ -83,4 +88,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
 
+    @Transactional
+    @Override
+    public Group addParticipant(Group group, User newParticipant) {
+        newParticipant.setGroup(group);
+        newParticipant.getUserRoles().add(roleRepository.findByName("STUDENT"));
+        userService.saveUser(newParticipant);
+
+        group = groupRepository.findByNumber(group.getNumber());
+        return group;
+    }
 }

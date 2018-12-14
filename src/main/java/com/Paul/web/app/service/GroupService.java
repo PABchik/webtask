@@ -17,6 +17,8 @@ public interface GroupService {
     void deleteGroup(int groupId, String token);
 
     Group findById(int groupId);
+
+    Group addParticipant(Group group, User newParticipant);
 }
 
 

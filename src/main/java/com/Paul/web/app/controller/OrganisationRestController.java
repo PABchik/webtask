@@ -43,8 +43,8 @@ public class OrganisationRestController {
 
 
     @GetMapping
-    public ResponseEntity<Organisation> getOrganisation(@RequestHeader("jwt_header") String token) {
-        User user = userService.getCurrentUser(token);
+    public ResponseEntity<Organisation> getOrganisation() {
+        User user = userService.getUserFromSecurityContext();
         if (user.getOrganisation() == null) {
             return ResponseEntity.notFound().build();
         }

@@ -15,6 +15,7 @@ public class AnswerOption {
 
     private String answer;
 
+    @JsonIgnore
     private boolean isCorrect;
 
     @JsonIgnore

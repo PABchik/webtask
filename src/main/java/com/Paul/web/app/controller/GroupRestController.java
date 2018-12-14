@@ -76,4 +76,20 @@ public class GroupRestController {
         return ResponseEntity.ok(group);
     }
 
+    @PatchMapping("{groupId}/participants/{userId}")
+    public ResponseEntity<Group> addGroupParticipant(@PathVariable("userId") int userId,
+                                                     @PathVariable("groupId") int groupId) {
+        User newParticipant = userService.findUserById(userId);
+        Group group = groupService.findById(groupId);
+
+        if (newParticipant == null ||
+                group == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        group = groupService.addParticipant(group, newParticipant);
+
+        return ResponseEntity.ok(group);
+    }
+
 }

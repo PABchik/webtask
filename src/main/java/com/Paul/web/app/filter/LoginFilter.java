@@ -77,7 +77,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     private void addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
         UserDetails user = authentication.getDetails();
         user.setExpires(new Date().getTime() + expires);
-        response.addHeader(header, tokenHandler.createTokenForUser(user));
+        response.addHeader(header, "Bearer " + tokenHandler.createTokenForUser(user));
     }
 
 }

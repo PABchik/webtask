@@ -35,10 +35,13 @@ public class AuthenticationFilter extends GenericFilterBean {
     }
 
     private Authentication getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(header);
-        if (token != null) {
-            UserDetails user = tokenHandler.parseUserFromToken(token);
-            if (user != null) return new UserAuthentication(user);
+        String headerValue = request.getHeader(header);
+        if (headerValue != null) {
+            String[] tokenAndPrefix = headerValue.split(" ");
+            if ("Bearer".equals(tokenAndPrefix[0])) {
+                UserDetails user = tokenHandler.parseUserFromToken(tokenAndPrefix[1]);
+                if (user != null) return new UserAuthentication(user);
+            }
         }
         return null;
     }
