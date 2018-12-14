@@ -1,4 +1,4 @@
-package com.Paul.web.app.security.methodSecurity;
+package com.Paul.web.app.config.methodSecurity;
 
 import com.Paul.web.app.service.UserService;
 import org.aopalliance.intercept.MethodInvocation;
@@ -32,3 +32,4 @@ public class CustomMethodSecurityExpressionHandler
         this.userService = userService;
     }
 }
+

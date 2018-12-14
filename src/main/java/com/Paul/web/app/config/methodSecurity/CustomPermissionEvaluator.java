@@ -1,4 +1,4 @@
-package com.Paul.web.app.security.methodSecurity;
+package com.Paul.web.app.config.methodSecurity;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;

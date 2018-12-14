@@ -42,6 +42,7 @@ public class OrganisationRestController {
     }
 
 
+    @PreAuthorize("isOrganisationOwner()")
     @GetMapping
     public ResponseEntity<Organisation> getOrganisation() {
         User user = userService.getUserFromSecurityContext();
@@ -68,6 +69,7 @@ public class OrganisationRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("isJustUser()")
     @GetMapping(value = "/all")
     public ResponseEntity<Set<Organisation>> getAllOrganisations() {
 

@@ -1,10 +1,10 @@
-package com.Paul.web.app.security.methodSecurity;
-
+package com.Paul.web.app.config.methodSecurity;
 
 import com.Paul.web.app.entity.Role;
 import com.Paul.web.app.entity.User;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
@@ -44,24 +44,25 @@ public class CustomMethodSecurityExpressionRoot
     }
 
 
-    /*public boolean isJustUser() {
-        User user = userService.getCurrentUser();
-        System.out.println(user.getRoles().contains("USER"));
+
+    public boolean isJustUser() {
+        User user = userService.getUserFromSecurityContext();
+        System.out.println(user.getUserRoles().contains("USER"));
         boolean hasRoleUser = false;
-        for (Role role : user.getRoles()) {
-            if (role.getRole().equals("USER")) {
+        for (Role role : user.getUserRoles()) {
+            if (role.getName().equals("USER")) {
                 hasRoleUser = true;
             }
         }
-        return (user.getRoles().size() == 1
+        return (user.getUserRoles().size() == 1
                 && hasRoleUser);
     }
 
     public boolean isGroupAdmin() {
-        User user = userService.getCurrentUser();
+        User user = userService.getUserFromSecurityContext();
         boolean hasRoleGroupAdmin = false;
-        for (Role role : user.getRoles()) {
-            if (role.getRole().equals("GROUP_ADMIN")) {
+        for (Role role : user.getUserRoles()) {
+            if (role.getName().equals("GROUP_ADMIN")) {
                 hasRoleGroupAdmin = true;
             }
         }
@@ -69,10 +70,10 @@ public class CustomMethodSecurityExpressionRoot
     }
 
     public boolean isTestManager() {
-        User user = userService.getCurrentUser();
+        User user = userService.getUserFromSecurityContext();
         boolean hasRoleTestManager = false;
-        for (Role role : user.getRoles()) {
-            if (role.getRole().equals("TEST_MANAGER")) {
+        for (Role role : user.getUserRoles()) {
+            if (role.getName().equals("TEST_MANAGER")) {
                 hasRoleTestManager = true;
             }
         }
@@ -80,15 +81,15 @@ public class CustomMethodSecurityExpressionRoot
     }
 
     public boolean isStudent() {
-        User user = userService.getCurrentUser();
+        User user = userService.getUserFromSecurityContext();
         boolean hasRoleStudent = false;
-        for (Role role : user.getRoles()) {
-            if (role.getRole().equals("STUDENT")) {
+        for (Role role : user.getUserRoles()) {
+            if (role.getName().equals("STUDENT")) {
                 hasRoleStudent = true;
             }
         }
         return hasRoleStudent;
-    }*/
+    }
 
     @Override
     public void setFilterObject(Object o) {

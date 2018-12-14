@@ -20,7 +20,7 @@ public class TestRestController {
 
 //    @PreAuthorize("isTestManager() || isOrganisationOwner()")
     @GetMapping
-    public ResponseEntity<Set<Test>> showTests(@RequestHeader("jwt_header") String token) {
+    public ResponseEntity<Set<Test>> showTests(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(testService.findAllOrgTests(token));
     }
 
