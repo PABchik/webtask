@@ -1,5 +1,7 @@
 package com.Paul.web.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -21,9 +23,20 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "test")
+    private Set<TestAttempt> testAttempts;
+
     public Test() {
     }
 
+    public Set<TestAttempt> getTestAttempts() {
+        return testAttempts;
+    }
+
+    public void setTestAttempts(Set<TestAttempt> testAttempts) {
+        this.testAttempts = testAttempts;
+    }
 
     public Set<Task> getTasks() {
         return tasks;

@@ -39,7 +39,19 @@ public class User implements Serializable {
     @ManyToOne
     private Group group;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "student")
+    private Set<TestAttempt> testAttempts;
+
     public User() {
+    }
+
+    public Set<TestAttempt> getTestAttempts() {
+        return testAttempts;
+    }
+
+    public void setTestAttempts(Set<TestAttempt> testAttempts) {
+        this.testAttempts = testAttempts;
     }
 
     public Organisation getOrganisation() {

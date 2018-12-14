@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class AnswerOption {
@@ -20,6 +21,19 @@ public class AnswerOption {
     @ManyToOne
     @JoinColumn(name = "task")
     private Task task;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "answerOption")
+    private Set<StudentAnswer> answers;
+
+
+    public Set<StudentAnswer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(Set<StudentAnswer> answers) {
+        this.answers = answers;
+    }
 
     public int getId() {
         return id;
