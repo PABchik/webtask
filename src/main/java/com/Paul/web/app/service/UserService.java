@@ -12,13 +12,15 @@ public interface UserService {
 
     User registerNewUser(User newUser);
 
-    User getCurrentUser(String token);
+    User getCurrentUser();
 
-    User getUserFromSecurityContext();
-
-    Set<User> findByOrg(String token);
+    Set<User> findByOrg();
 
     User findUserById(int userId);
 
-    User assignRoles(User userChanged, String token);
+    User assignRoles(User userChanged);
+
+    User leftOrganisation(User user);
+
+    User hideInfo(User user);
 }

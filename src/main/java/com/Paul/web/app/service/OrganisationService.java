@@ -23,13 +23,19 @@ public interface OrganisationService {
 
     void changeOrganisationOwner(User user);
 */
-    void deleteOrganisation(@RequestHeader("jwt_token") String token);
+    void deleteOrganisation();
 
     Organisation findById(int organisation);
 
     Set<Organisation> findAll();
 
     Organisation save(Organisation organisation);
+
+    User deleteGroupAdmin(User user);
+
+    User deleteTestManager(User user);
+
+    User deleteStudent(User user);
 
     /*void removeGroupAdmin(User user);
 

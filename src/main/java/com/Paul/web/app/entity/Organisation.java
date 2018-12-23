@@ -20,7 +20,6 @@ public class Organisation {
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     private Set<Group> groups = new HashSet<Group>();
 
-//    @JsonSerialize(contentUsing = ParticipantSerializer.class)
     @JsonIgnore
     @OneToMany(mappedBy="organisation", cascade = CascadeType.DETACH)
     private Set<User> participants = new HashSet<User>();

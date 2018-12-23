@@ -6,9 +6,9 @@ import java.util.Set;
 
 public interface TestAttemptService {
 
-    TestAttempt createAttempt(String token, TestAttempt attempt);
+    TestAttempt createAttempt(TestAttempt attempt);
 
-    Set<TestAttempt> getTestAttempts(String token, int testId);
+    Set<TestAttempt> getTestAttempts(int testId);
 
     TestAttempt findById(int attemptId);
 }

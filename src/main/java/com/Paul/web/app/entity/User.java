@@ -1,6 +1,7 @@
 package com.Paul.web.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -28,15 +29,19 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> userRoles;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String firstname;
 
     private String lastname;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "organisation")
     private Organisation organisation;
 
+    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @JsonIgnore

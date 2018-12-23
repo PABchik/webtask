@@ -27,9 +27,9 @@ public class TestAttemptServiceImpl implements TestAttemptService {
 
     @Transactional
     @Override
-    public TestAttempt createAttempt(String token, TestAttempt attempt) {
+    public TestAttempt createAttempt(TestAttempt attempt) {
 
-        User user = userService.getCurrentUser(token);
+        User user = userService.getCurrentUser();
         attempt.setStudent(user);
 
         int attemptsNumber = testAttemptRepository.getAttemptNumber(attempt.getTest().getId(),
@@ -44,8 +44,8 @@ public class TestAttemptServiceImpl implements TestAttemptService {
     }
 
     @Override
-    public Set<TestAttempt> getTestAttempts(String token, int testId) {
-        User user = userService.getCurrentUser(token);
+    public Set<TestAttempt> getTestAttempts(int testId) {
+        User user = userService.getCurrentUser();
         return testAttemptRepository.getStudentTestAttempts(user.getId(), testId);
     }
 

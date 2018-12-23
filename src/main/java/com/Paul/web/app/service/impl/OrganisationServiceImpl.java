@@ -1,11 +1,8 @@
 package com.Paul.web.app.service.impl;
 
-import com.Paul.web.app.entity.Organisation;
-import com.Paul.web.app.entity.Role;
-import com.Paul.web.app.entity.User;
-import com.Paul.web.app.repository.OrganisationRepository;
-import com.Paul.web.app.repository.RoleRepository;
-import com.Paul.web.app.repository.UserRepository;
+import com.Paul.web.app.entity.*;
+import com.Paul.web.app.exception.BuisnessException;
+import com.Paul.web.app.repository.*;
 import com.Paul.web.app.service.OrganisationService;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,12 @@ public class OrganisationServiceImpl implements OrganisationService {
     private UserRepository userRepository;
 
     @Autowired
+    private GroupRepository groupRepository;
+
+    @Autowired
+    private TestRepository testRepository;
+
+    @Autowired
     RoleRepository roleRepository;
 
 //    @Autowired
@@ -41,9 +44,11 @@ public class OrganisationServiceImpl implements OrganisationService {
 
     @Override
     public Organisation createOrganisation(User owner, Organisation newOrganisation) {
-        if (organisationRepository.findByOwnerId(owner.getId()) == null &&
-                organisationRepository.findByName(newOrganisation.getName()) == null &&
-                owner.getOrganisation() == null) {
+        if (organisationRepository.findByOwnerId(owner.getId()) != null ||
+                organisationRepository.findByName(newOrganisation.getName()) != null ||
+                owner.getOrganisation() != null) {
+            throw new BuisnessException("Error by creating new organisation");
+        }
             newOrganisation.setOwnerId(owner.getId());
             Set<User> organisationParticipants = newOrganisation.getParticipants();
             organisationParticipants.add(owner);
@@ -51,14 +56,15 @@ public class OrganisationServiceImpl implements OrganisationService {
 
             owner.setOrganisation(newOrganisation);
             owner.getUserRoles().add(roleRepository.findByName("ORGANISATION_OWNER"));
+            owner.getUserRoles().add(roleRepository.findByName("TEST_MANAGER"));
+            owner.getUserRoles().add(roleRepository.findByName("GROUP_ADMIN"));
             userService.saveUser(owner);
-        }
-
-
 
         return newOrganisation;
     }
 
+
+    @Transactional
     @Override
     public User addParticipant(User newParticipant, Organisation organisation) {
 
@@ -82,13 +88,14 @@ public class OrganisationServiceImpl implements OrganisationService {
 
     @Override
     public void deleteParticipant(User user) {
-        Organisation organisation = user.getOrganisation();
+        /*Organisation organisation = user.getOrganisation();
         Set<User> participants = organisation.getParticipants();
         participants.remove(user);
         organisation.setParticipants(participants);
-        organisationRepository.save(organisation);
+        organisationRepository.save(organisation);*/
         user.setUserRoles(new HashSet<Role>(Arrays.asList(roleRepository.findByName("USER"))));
-//        user.setGroup(null);
+        user.setOrganisation(null);
+        user.setGroup(null);
         userService.saveUser(user);
     }
 
@@ -129,8 +136,8 @@ public class OrganisationServiceImpl implements OrganisationService {
     }*/
 
     @Override
-    public void deleteOrganisation(@RequestHeader("jwt_token") String token) {
-        User organisationOwner = userService.getCurrentUser(token);
+    public void deleteOrganisation() {
+        User organisationOwner = userService.getCurrentUser();
         Organisation organisation = organisationOwner.getOrganisation();
         Set<Role> roles = new HashSet<Role>();
         roles.add(roleRepository.findByName("USER"));
@@ -164,7 +171,7 @@ public class OrganisationServiceImpl implements OrganisationService {
     public void removeGroupAdmin(User user) {
         userService.deleteRole("GROUP_ADMIN", user);
         Organisation organisation = user.getOrganisation();
-//        User organisationOwner = userRepository.findById(organisation.getOwnerId());
+//        User organisationOwner = userRepository.findById(organ1isation.getOwnerId());
         for (Group group : groupRepository.findAllAdminsGroups(user.getId())) {
 
             groupService.setGroupAdminId(group, organisation.getOwnerId());
@@ -180,4 +187,55 @@ public class OrganisationServiceImpl implements OrganisationService {
     public void removeStudent(User user) {
 
     }*/
+
+    @Override
+    public User deleteGroupAdmin(User user) {
+        Set<Group> groups = groupRepository.findGroupsByAdminId(user.getId());
+        if (groups != null) {
+            if (!userService.
+                    getCurrentUser().
+                    getUserRoles().
+                    contains(roleRepository.
+                    findByName("GROUP_ADMIN"))) {
+                User owner = userService.getCurrentUser();
+                owner.getUserRoles().add(roleRepository.findByName("GROUP_ADMIN"));
+                userService.saveUser(owner);
+            }
+            for (Group group : groups) {
+                group.setGroupAdminId(userService.getCurrentUser().getId());
+                groupRepository.save(group);
+            }
+        }
+        user.getUserRoles().remove(roleRepository.findByName("GROUP_ADMIN"));
+        userService.saveUser(user);
+        return user;
+    }
+
+    @Override
+    public User deleteTestManager(User user) {
+        Set<Test> tests = testRepository.findByTestManagerId(user.getId());
+        if (tests != null) {
+            if (userService.getCurrentUser().getUserRoles().contains(roleRepository.
+                    findByName("TEST_MANAGER"))) {
+                User owner = userService.getCurrentUser();
+                owner.getUserRoles().add(roleRepository.findByName("TEST_MANAGER"));
+                userService.saveUser(owner);
+            }
+            for (Test test : tests) {
+                test.setManagerId(userService.getCurrentUser().getId());
+                testRepository.save(test);
+            }
+            user.getUserRoles().remove(roleRepository.findByName("TEST_MANAGER"));
+            userService.saveUser(user);
+        }
+        return user;
+    }
+
+    @Override
+    public User deleteStudent(User user) {
+        user.setGroup(null);
+        user.getUserRoles().remove(roleRepository.findByName("STUDENT"));
+        userService.saveUser(user);
+        return user;
+    }
 }

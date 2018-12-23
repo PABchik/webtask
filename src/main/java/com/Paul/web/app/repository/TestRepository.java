@@ -15,4 +15,8 @@ public interface TestRepository extends JpaRepository<Test, Integer> {
     @Query(value = "select * from test where organisation_id = :orgId",
             nativeQuery = true)
     Set<Test> findAllOrgTests(@Param("orgId") int orgId);
+
+    @Query(value = "select * from test where manager_id = :managerId",
+            nativeQuery = true)
+    Set<Test> findByTestManagerId(int id);
 }

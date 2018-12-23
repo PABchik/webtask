@@ -22,11 +22,17 @@ public class OrganisationRestController {
     @Autowired
     UserService userService;
 
-//    @PreAuthorize("isJustUser()")
-    @PostMapping
-    public Organisation createOrganisation(@RequestHeader("jwt_header") String token, @RequestBody Organisation organisation) {
+    @PreAuthorize("isJustUser()")
+    @PostMapping("testBack")
+    public ResponseEntity<String> testService() {
+        return ResponseEntity.ok(new String("ok"));
+    }
 
-        User user = userService.getCurrentUser(token);
+    @PreAuthorize("isJustUser()")
+    @PostMapping
+    public Organisation createOrganisation(@RequestBody Organisation organisation) {
+
+        User user = userService.getCurrentUser();
         if (user.getOrganisation() != null) {
             throw new BuisnessException("You are already participant of another organisation");
         }
@@ -45,31 +51,30 @@ public class OrganisationRestController {
     @PreAuthorize("isOrganisationOwner()")
     @GetMapping
     public ResponseEntity<Organisation> getOrganisation() {
-        User user = userService.getUserFromSecurityContext();
+        User user = userService.getCurrentUser();
         if (user.getOrganisation() == null) {
             return ResponseEntity.notFound().build();
         }
         Organisation organisation = user.getOrganisation();
         for (User i : organisation.getParticipants()) {
-            i.setPassword(null);
-            i.setOrganisation(null);
+            i = userService.hideInfo(i);
         }
         return ResponseEntity.ok(organisation);
     }
 
+    @PreAuthorize("isOrganisationOwner()")
     @DeleteMapping
-    public ResponseEntity<Organisation> deleteOrganisation(@RequestHeader("jwt_header") String token) {
-        User user = userService.getCurrentUser(token);
+    public ResponseEntity<Organisation> deleteOrganisation() {
+        User user = userService.getCurrentUser();
         if (user.getOrganisation() == null) {
             return ResponseEntity.notFound().build();
         }
 
-        organisationService.deleteOrganisation(token);
+        organisationService.deleteOrganisation();
 
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("isJustUser()")
     @GetMapping(value = "/all")
     public ResponseEntity<Set<Organisation>> getAllOrganisations() {
 
@@ -79,10 +84,9 @@ public class OrganisationRestController {
 
         Set<Organisation> organisations = organisationService.findAll();
         for (Organisation org : organisations) {
-            for (User user : org.getParticipants()) {
-                user.setPassword(null);
-                user.setOrganisation(null);
-            }
+            org.setParticipants(null);
+            org.setOwnerId(0);
+            org.setGroups(null);
         }
         return ResponseEntity.ok(organisations);
     }

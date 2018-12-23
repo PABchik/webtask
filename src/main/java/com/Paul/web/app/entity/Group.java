@@ -22,10 +22,15 @@ public class Group {
     private int groupAdminId;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     private Set<User> participants;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "test_id"))
+    private Set<Test> tests;
 
     public Group() {
     }
@@ -68,5 +73,13 @@ public class Group {
 
     public void setParticipants(Set<User> participants) {
         this.participants = participants;
+    }
+
+    public Set<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(Set<Test> tests) {
+        this.tests = tests;
     }
 }

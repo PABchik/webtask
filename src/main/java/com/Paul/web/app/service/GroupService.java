@@ -14,11 +14,19 @@ public interface GroupService {
 
     Set<Group> findByAdmin(int userId);
 
-    void deleteGroup(int groupId, String token);
+    void deleteGroup(int groupId);
 
     Group findById(int groupId);
 
     Group addParticipant(Group group, User newParticipant);
+
+    void deleteParticipant(Group group, User user);
+
+    Group renameGroup(Group group, String groupName);
+
+    Set<Group> getOwnedGroups(User currentUser);
+
+    Group saveGroup(Group group);
 }
 
 

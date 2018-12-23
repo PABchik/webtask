@@ -33,7 +33,7 @@ public class CustomMethodSecurityExpressionRoot
 //        MyUserPrincipal mupr = new MyUserPrincipal(new User());
 
 //        User user = ((MyUserPrincipal)this.getPrincipal()).getUser();
-        User user = userService.getUserFromSecurityContext();
+        User user = userService.getCurrentUser();
         boolean hasRoleUser = false;
         for (Role role : user.getUserRoles()) {
             if (role.getName().equals("ORGANISATION_OWNER")) {
@@ -46,7 +46,7 @@ public class CustomMethodSecurityExpressionRoot
 
 
     public boolean isJustUser() {
-        User user = userService.getUserFromSecurityContext();
+        User user = userService.getCurrentUser();
         System.out.println(user.getUserRoles().contains("USER"));
         boolean hasRoleUser = false;
         for (Role role : user.getUserRoles()) {
@@ -59,7 +59,7 @@ public class CustomMethodSecurityExpressionRoot
     }
 
     public boolean isGroupAdmin() {
-        User user = userService.getUserFromSecurityContext();
+        User user = userService.getCurrentUser();
         boolean hasRoleGroupAdmin = false;
         for (Role role : user.getUserRoles()) {
             if (role.getName().equals("GROUP_ADMIN")) {
@@ -70,7 +70,7 @@ public class CustomMethodSecurityExpressionRoot
     }
 
     public boolean isTestManager() {
-        User user = userService.getUserFromSecurityContext();
+        User user = userService.getCurrentUser();
         boolean hasRoleTestManager = false;
         for (Role role : user.getUserRoles()) {
             if (role.getName().equals("TEST_MANAGER")) {
@@ -81,7 +81,7 @@ public class CustomMethodSecurityExpressionRoot
     }
 
     public boolean isStudent() {
-        User user = userService.getUserFromSecurityContext();
+        User user = userService.getCurrentUser();
         boolean hasRoleStudent = false;
         for (Role role : user.getUserRoles()) {
             if (role.getName().equals("STUDENT")) {

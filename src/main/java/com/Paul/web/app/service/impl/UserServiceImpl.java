@@ -54,24 +54,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getCurrentUser(String token) {
-        User user = tokenHandler.parseUserFromToken(token).getUser();
-        String email = user.getEmail();
-        user = userRepository.findByEmail(user.getEmail());
-        return user;
-    }
-
-    @Override
-    public User getUserFromSecurityContext() {
+    public User getCurrentUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         return userRepository.findByEmail(userDetails.getUser().getEmail());
-
     }
 
     @Override
-    public Set<User> findByOrg(String token) {
-        return getCurrentUser(token).getOrganisation().getParticipants();
+    public Set<User> findByOrg() {
+        return getCurrentUser().getOrganisation().getParticipants();
     }
 
     @Override
@@ -81,14 +72,36 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User assignRoles(User userChanged, String token) {
+    public User assignRoles(User userChanged) {
         User user = findUserById(userChanged.getId());
-        if( !getCurrentUser(token).getOrganisation().getParticipants().contains(user)) {
+        if( !getCurrentUser().getOrganisation().getParticipants().contains(user)) {
             throw new BuisnessException("this user is not in your organisation");
         }
         for (Role role : userChanged.getUserRoles()) {
-            user.getUserRoles().add(role);
+            user.getUserRoles().add(roleRepository.findByName(role.getName()));
         }
         return saveUser(user);
+    }
+
+    @Override
+    public User leftOrganisation(User user) {
+
+        user.setOrganisation(null);
+        return saveUser(user);
+    }
+
+    @Override
+    public User hideInfo(User user) {
+        User currrentUser = getCurrentUser();
+        user.setPassword("");
+        user.setOrganisation(null);
+        if (!currrentUser.getUserRoles().contains(roleRepository.findByName("GROUP_ADMIN"))) {
+            user.setGroup(null);
+        }
+        if (!currrentUser.getUserRoles().contains(roleRepository.findByName("TEST_MANAGER"))) {
+            user.setTestAttempts(null);
+        }
+
+        return user;
     }
 }

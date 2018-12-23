@@ -63,16 +63,16 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void deleteGroup(int groupId, String token) {
+    public void deleteGroup(int groupId) {
         Group group = groupRepository.findById(groupId);
 
-        if (group == null || group.getGroupAdminId() != userService.getCurrentUser(token).getId() &&
-                userService.getCurrentUser(token).getId() != group.getOrganisation().getOwnerId()) {
+        if (group == null || group.getGroupAdminId() != userService.getCurrentUser().getId() &&
+                userService.getCurrentUser().getId() != group.getOrganisation().getOwnerId()) {
             return;
         }
-        Organisation organisation = group.getOrganisation();
+        /*Organisation organisation = group.getOrganisation();
         organisation.getGroups().remove(group);
-        organisationService.save(organisation);
+        organisationService.save(organisation);*/
         group.setOrganisation(null);
         for (User user : group.getParticipants()) {
             user.setGroup(null);
@@ -91,6 +91,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public Group addParticipant(Group group, User newParticipant) {
+
         newParticipant.setGroup(group);
         newParticipant.getUserRoles().add(roleRepository.findByName("STUDENT"));
         userService.saveUser(newParticipant);
@@ -98,4 +99,33 @@ public class GroupServiceImpl implements GroupService {
         group = groupRepository.findByNumber(group.getNumber());
         return group;
     }
+
+    @Override
+    public void deleteParticipant(Group group, User user) {
+        user.setGroup(null);
+        userService.saveUser(user);
+    }
+
+    @Override
+    public Group renameGroup(Group group, String groupName) {
+        if ("".equals(groupName) || groupName != null) {
+            throw new BuisnessException("Incorrect group name");
+        }
+        group.setNumber(groupName);
+        groupRepository.save(group);
+        return group;
+
+    }
+
+    @Override
+    public Set<Group> getOwnedGroups(User currentUser) {
+        return groupRepository.findGroupsByAdminId(currentUser.getId());
+    }
+
+    @Override
+    public Group saveGroup(Group group) {
+        return groupRepository.save(group);
+    }
 }
+
+

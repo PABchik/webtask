@@ -8,6 +8,7 @@ import com.Paul.web.app.service.OrganisationService;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -25,57 +26,70 @@ public class GroupRestController {
     @Autowired
     GroupService groupService;
 
-//    @PreAuthorize("!isJustUser()") /*only 4 grAdmin or TM*/
+    @PreAuthorize("isGroupAdmin() || isTestManager()") /*only 4 grAdmin or TM*/
     @GetMapping
-    public ResponseEntity<Set<Group>> showGroups(@RequestHeader("jwt_header") String token) {
-        if (userService.getCurrentUser(token) == null ||
-                userService.getCurrentUser(token).getOrganisation() == null) {
+    public ResponseEntity<Set<Group>> showGroups() {
+        if (userService.getCurrentUser() == null ||
+                userService.getCurrentUser().getOrganisation() == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userService.getCurrentUser(token).getOrganisation().getGroups());
+        return ResponseEntity.ok(userService.getCurrentUser().getOrganisation().getGroups());
     }
 
-//    @PreAuthorize("isGroupAdmin()")
+    @PreAuthorize("isGroupAdmin()")
+    @GetMapping(value = "/my")
+    public ResponseEntity<Set<Group>> showOwnedGroups() {
+        if (userService.getCurrentUser() == null ||
+                userService.getCurrentUser().getOrganisation() == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(groupService.getOwnedGroups(userService.getCurrentUser()));
+    }
+
+
+    @PreAuthorize("isGroupAdmin()")
     @PostMapping
-    public ResponseEntity<Group> createGroup(@RequestHeader("jwt_header") String token, @RequestBody Group group) {
+    public ResponseEntity<Group> createGroup(@RequestBody Group group) {
 
         if (group == null) {
             return ResponseEntity.badRequest().build();
         }
-        if (userService.getCurrentUser(token).getOrganisation().getOwnerId() != userService.getCurrentUser(token).getId() &&
-                groupService.findByAdmin(userService.getCurrentUser(token).getId()) == null) {
+        if (userService.getCurrentUser().getOrganisation().getOwnerId() != userService.getCurrentUser().getId() &&
+                groupService.findByAdmin(userService.getCurrentUser().getId()) == null) {
             throw new BuisnessException("You aren't group admin or organisation owner, access denied");
         }
-        return ResponseEntity.ok(groupService.createGroup(group, userService.getCurrentUser(token)));
+        return ResponseEntity.ok(groupService.createGroup(group, userService.getCurrentUser()));
     }
 
 //    @PreAuthorize("isOrganisationOwner() || isGroupAdmin()")
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteGroup(@RequestHeader("jwt_header") String token, @PathVariable("id") int groupId) {
+    public ResponseEntity deleteGroup(@PathVariable("id") int groupId) {
 
         Group group = groupService.findById(groupId);
-        User user = userService.getCurrentUser(token);
-        if (group == null ||
-                user.getId() != group.getGroupAdminId() &&
-                        user.getId() != group.getOrganisation().getOwnerId()) {
-            return ResponseEntity.badRequest().build();
+        User user = userService.getCurrentUser();
+        if (group == null) {
+            return ResponseEntity.notFound().build();
         }
-        groupService.deleteGroup(groupId, token);
+        if (user.getId() != group.getGroupAdminId() &&
+                user.getId() != group.getOrganisation().getOwnerId()) {
+            throw new BuisnessException("you cannot delete this group");
+        }
+        groupService.deleteGroup(groupId);
         return ResponseEntity.ok().build();
     }
 
 //    @PreAuthorize("isOrganisationOwner() || isGroupAdmin() || isTestManager()")
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Group> showGroup(@RequestHeader("jwt_header") String token,
-                                           @PathVariable("id") int groupId) {
+    public ResponseEntity<Group> showGroup(@PathVariable("id") int groupId) {
         Group group = groupService.findById(groupId);
         if (group == null ||
-                !group.getOrganisation().getParticipants().contains(userService.getCurrentUser(token))) {
+                !group.getOrganisation().getParticipants().contains(userService.getCurrentUser())) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(group);
     }
 
+    @PreAuthorize("isGroupAdmin()")
     @PatchMapping("{groupId}/participants/{userId}")
     public ResponseEntity<Group> addGroupParticipant(@PathVariable("userId") int userId,
                                                      @PathVariable("groupId") int groupId) {
@@ -87,8 +101,41 @@ public class GroupRestController {
             return ResponseEntity.notFound().build();
         }
 
+        if (newParticipant.getGroup() != null) {
+            throw new BuisnessException("Student is in another group");
+        }
+
         group = groupService.addParticipant(group, newParticipant);
 
+        return ResponseEntity.ok(group);
+    }
+
+    @PreAuthorize("isGroupAdmin()")
+    @DeleteMapping(value = "{groupId}/participants/{userId}")
+    public void deleteGroupParticipant(@PathVariable("groupId") int groupId,
+                                       @PathVariable("userId") int userId) {
+
+        User user = userService.findUserById(userId);
+        Group group = groupService.findById(groupId);
+
+        if (user == null ||
+                group == null ||
+                group.getOrganisation() != userService.getCurrentUser().getOrganisation()) {
+            return;
+        }
+        groupService.deleteParticipant(group, user);
+    }
+
+    @PreAuthorize("isGroupAdmin()")
+    @PatchMapping(value = "{groupId}")
+    public ResponseEntity<Group> renameGroup(@PathVariable("groupId") int groupId,
+                                             @RequestBody Group newGroup) {
+        Group group = groupService.findById(groupId);
+        if (group == null ||
+                group.getOrganisation() != userService.getCurrentUser().getOrganisation()) {
+            return ResponseEntity.notFound().build();
+        }
+        group = groupService.renameGroup(group, newGroup.getNumber());
         return ResponseEntity.ok(group);
     }
 

@@ -6,7 +6,6 @@ import com.Paul.web.app.service.TestService;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,12 +43,11 @@ public class TaskRestController {
 //    @PreAuthorize("isTestManager()")
     @DeleteMapping(value = "/{taskId}")
     public ResponseEntity<Task> deleteTask(@PathVariable("testId") int testId,
-                                           @PathVariable("taskId") int taskId,
-                                           @RequestHeader("jwt_header") String token) {
+                                           @PathVariable("taskId") int taskId) {
 
         Task task = taskService.findById(taskId);
         if (task == null || task.getTest().getId() != testId ||
-                task.getTest().getManagerId() != userService.getCurrentUser(token).getId()) {
+                task.getTest().getManagerId() != userService.getCurrentUser().getId()) {
             return ResponseEntity.notFound().build();
         }
         taskService.deleteTask(task);
