@@ -29,7 +29,7 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> userRoles;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+
     private String firstname;
 
     private String lastname;
