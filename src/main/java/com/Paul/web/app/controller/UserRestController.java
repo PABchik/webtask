@@ -48,7 +48,6 @@ public class UserRestController {
         if (user == null) {
             return ResponseEntity.badRequest().build();
         }
-        user = userService.hideInfo(user);
         return ResponseEntity.ok(user);
     }
 

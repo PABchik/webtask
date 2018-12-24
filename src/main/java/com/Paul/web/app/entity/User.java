@@ -1,7 +1,9 @@
 package com.Paul.web.app.entity;
 
+import com.Paul.web.app.entity.serializer.OrganisationSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -19,6 +21,7 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotEmpty
     @Column(nullable = false)
     private String password;
@@ -34,9 +37,11 @@ public class User implements Serializable {
 
     private String lastname;
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "organisation")
+//    @JsonSerialize(using = OrganisationSerializer.class)
+    @JsonIgnore
     private Organisation organisation;
 
     @JsonIgnore
@@ -48,7 +53,20 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "student")
     private Set<TestAttempt> testAttempts;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "managerId")
+    private Set<Test> tests;
+
     public User() {
+    }
+
+
+    public Set<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(Set<Test> tests) {
+        this.tests = tests;
     }
 
     public Set<TestAttempt> getTestAttempts() {

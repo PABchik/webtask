@@ -11,4 +11,6 @@ public interface TestAttemptService {
     Set<TestAttempt> getTestAttempts(int testId);
 
     TestAttempt findById(int attemptId);
+
+    Set<TestAttempt> getTestManagerTestAttempts(int testId);
 }

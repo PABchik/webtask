@@ -1,6 +1,8 @@
 package com.Paul.web.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.Paul.web.app.entity.serializer.GroupSerializer;
+import com.Paul.web.app.entity.serializer.UserSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -16,11 +18,11 @@ public class Organisation {
     @Column(name = "owner_id")
     private int ownerId;
 
-    @JsonIgnore
+    @JsonSerialize(contentUsing = GroupSerializer.class)
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     private Set<Group> groups = new HashSet<Group>();
 
-    @JsonIgnore
+    @JsonSerialize(contentUsing = UserSerializer.class)
     @OneToMany(mappedBy="organisation", cascade = CascadeType.DETACH)
     private Set<User> participants = new HashSet<User>();
 

@@ -61,7 +61,7 @@ public class GroupRestController {
         return ResponseEntity.ok(groupService.createGroup(group, userService.getCurrentUser()));
     }
 
-//    @PreAuthorize("isOrganisationOwner() || isGroupAdmin()")
+    @PreAuthorize("isGroupAdmin()")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteGroup(@PathVariable("id") int groupId) {
 
@@ -78,7 +78,7 @@ public class GroupRestController {
         return ResponseEntity.ok().build();
     }
 
-//    @PreAuthorize("isOrganisationOwner() || isGroupAdmin() || isTestManager()")
+    @PreAuthorize("isGroupAdmin()")
     @GetMapping(value = "/{id}")
     public ResponseEntity<Group> showGroup(@PathVariable("id") int groupId) {
         Group group = groupService.findById(groupId);

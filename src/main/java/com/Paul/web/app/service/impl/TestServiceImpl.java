@@ -32,7 +32,10 @@ public class TestServiceImpl implements TestService {
             throw new BuisnessException("This test already exists");
         }
         test.setOrganisationId(userService.getCurrentUser().getOrganisation().getId());
-        test.setManagerId(userService.getCurrentUser().getId());
+        test.setManagerId(userService.getCurrentUser());
+        if (test.getMaxAttempts() <= 0 ) {
+            test.setMaxAttempts(1);
+        }
         return testRepository.save(test);
     }
 
@@ -44,8 +47,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public void deleteTest(Test test) {
         User user = userService.getCurrentUser();
-        if (test.getManagerId() != user.getId() &&
-                user.getOrganisation().getOwnerId() != user.getId()) {
+        if (test.getManagerId().getId() != user.getId()) {
             throw new BuisnessException("You have not enough access permissions");
         }
 
@@ -62,11 +64,17 @@ public class TestServiceImpl implements TestService {
     @Override
     public Test assignTest(Group group, Test test) {
         Set<Test> groupTests = new HashSet<>();
+        groupTests.addAll(group.getTests());
         groupTests.add(test);
         group.setTests(groupTests);
         groupService.saveGroup(group);
         return test;
 
+    }
+
+    @Override
+    public Set<Test> findAllUserTests() {
+        return testRepository.findAllUserTests(userService.getCurrentUser().getId());
     }
 }
 

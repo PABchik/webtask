@@ -7,7 +7,6 @@ import com.Paul.web.app.service.OrganisationService;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
@@ -222,7 +221,7 @@ public class OrganisationServiceImpl implements OrganisationService {
                 userService.saveUser(owner);
             }
             for (Test test : tests) {
-                test.setManagerId(userService.getCurrentUser().getId());
+                test.setManagerId(userService.getCurrentUser());
                 testRepository.save(test);
             }
             user.getUserRoles().remove(roleRepository.findByName("TEST_MANAGER"));

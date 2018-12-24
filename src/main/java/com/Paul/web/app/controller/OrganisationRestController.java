@@ -56,9 +56,7 @@ public class OrganisationRestController {
             return ResponseEntity.notFound().build();
         }
         Organisation organisation = user.getOrganisation();
-        for (User i : organisation.getParticipants()) {
-            i = userService.hideInfo(i);
-        }
+
         return ResponseEntity.ok(organisation);
     }
 

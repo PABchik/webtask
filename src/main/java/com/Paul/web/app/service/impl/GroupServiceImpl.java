@@ -1,7 +1,6 @@
 package com.Paul.web.app.service.impl;
 
 import com.Paul.web.app.entity.Group;
-import com.Paul.web.app.entity.Organisation;
 import com.Paul.web.app.entity.User;
 import com.Paul.web.app.exception.BuisnessException;
 import com.Paul.web.app.repository.GroupRepository;
@@ -103,6 +102,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void deleteParticipant(Group group, User user) {
         user.setGroup(null);
+        user.getUserRoles().remove(roleRepository.findByName("STUDENT"));
         userService.saveUser(user);
     }
 

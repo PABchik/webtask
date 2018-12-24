@@ -1,6 +1,9 @@
 package com.Paul.web.app.entity;
 
+import com.Paul.web.app.entity.serializer.TaskSerializer;
+import com.Paul.web.app.entity.serializer.UserSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,12 +17,16 @@ public class Test {
 
     private String name;
 
-    private int managerId;
+    @ManyToOne
+    @JsonSerialize(using = UserSerializer.class)
+    @JoinColumn(name = "manager_id")
+    private User managerId;
 
     private int maxAttempts;
 
     private int organisationId;
 
+    @JsonSerialize(contentUsing = TaskSerializer.class)
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     private Set<Task> tasks;
 
@@ -70,11 +77,11 @@ public class Test {
         this.name = name;
     }
 
-    public int getManagerId() {
+    public User getManagerId() {
         return managerId;
     }
 
-    public void setManagerId(int managerId) {
+    public void setManagerId(User managerId) {
         this.managerId = managerId;
     }
 

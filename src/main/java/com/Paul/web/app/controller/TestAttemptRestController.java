@@ -3,6 +3,8 @@ package com.Paul.web.app.controller;
 
 import com.Paul.web.app.entity.Test;
 import com.Paul.web.app.entity.TestAttempt;
+import com.Paul.web.app.entity.User;
+import com.Paul.web.app.repository.RoleRepository;
 import com.Paul.web.app.service.TestAttemptService;
 import com.Paul.web.app.service.TestService;
 import com.Paul.web.app.service.UserService;
@@ -27,6 +29,9 @@ public class TestAttemptRestController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    RoleRepository roleRepository;
+
     @PreAuthorize("isStudent()")
     @PostMapping
     public ResponseEntity<TestAttempt> createAttempt(@PathVariable("testId") int testId) {
@@ -44,14 +49,18 @@ public class TestAttemptRestController {
         return ResponseEntity.ok(attempt);
     }
 
+    @PreAuthorize("isStudent() || isTestManager()")
     @GetMapping
     public ResponseEntity<Set<TestAttempt>> showAttempts(@PathVariable("testId") int testId) {
-        Set<TestAttempt> testAttempts = testAttemptService.getTestAttempts(testId);
-        for (TestAttempt attempt : testAttempts) {
-            attempt.getStudent().setPassword(null);
-            attempt.getStudent().setUserRoles(null);
-        }
+        User user = userService.getCurrentUser();
+        Set<TestAttempt> testAttempts;
+        if (user.getUserRoles().contains(roleRepository.findByName("STUDENT"))) {
 
+            testAttempts = testAttemptService.getTestAttempts(testId);
+        }
+        else {
+            testAttempts = testAttemptService.getTestManagerTestAttempts(testId);
+        }
         return ResponseEntity.ok(testAttempts);
     }
 

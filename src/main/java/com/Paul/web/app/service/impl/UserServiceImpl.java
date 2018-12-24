@@ -89,18 +89,5 @@ public class UserServiceImpl implements UserService {
         return saveUser(user);
     }
 
-    @Override
-    public User hideInfo(User user) {
-        User currrentUser = getCurrentUser();
-        user.setPassword("");
-        user.setOrganisation(null);
-        if (!currrentUser.getUserRoles().contains(roleRepository.findByName("GROUP_ADMIN"))) {
-            user.setGroup(null);
-        }
-        if (!currrentUser.getUserRoles().contains(roleRepository.findByName("TEST_MANAGER"))) {
-            user.setTestAttempts(null);
-        }
 
-        return user;
-    }
 }

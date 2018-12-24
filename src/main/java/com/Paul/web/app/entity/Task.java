@@ -1,6 +1,8 @@
 package com.Paul.web.app.entity;
 
+import com.Paul.web.app.entity.serializer.TestSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -11,7 +13,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JsonIgnore
+    @JsonSerialize(using = TestSerializer.class)
     @ManyToOne
     @JoinColumn(name = "test")
     private Test test;

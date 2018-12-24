@@ -4,6 +4,7 @@ import com.Paul.web.app.entity.AnswerOption;
 import com.Paul.web.app.entity.Task;
 import com.Paul.web.app.service.AnswerOptionService;
 import com.Paul.web.app.service.TaskService;
+import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,21 +20,25 @@ public class AnswerOptionRestController {
     @Autowired
     AnswerOptionService answerOptionService;
 
-//    @PreAuthorize("isTestManager()")
+    @Autowired
+    UserService userService;
+
+    @PreAuthorize("isTestManager()")
     @PostMapping
     public ResponseEntity<AnswerOption> createAnswerOption(@PathVariable("testId") int testId,
                                                            @PathVariable("taskId") int taskId,
                                                            @RequestBody AnswerOption ansOpt) {
         Task task = taskService.findById(taskId);
         if (task == null ||
-                task.getTest().getId() != testId || ansOpt == null) {
+                task.getTest().getId() != testId || ansOpt == null ||
+                task.getTest().getManagerId().getId() != userService.getCurrentUser().getId()) {
             return ResponseEntity.notFound().build();
         }
         ansOpt.setTask(task);
         return ResponseEntity.ok(answerOptionService.saveAnswerOption(ansOpt));
     }
 
-//    @PreAuthorize("isOrganisationOwner() || isTestManager() || isStudent()")
+    @PreAuthorize("isOrganisationOwner() || isTestManager() || isStudent()")
     @GetMapping(value = "/{ansOptId}")
     public ResponseEntity<AnswerOption> showAnswerOption(@PathVariable("testId") int testId,
                                                          @PathVariable("taskId") int taskId,

@@ -1,7 +1,7 @@
 package com.Paul.web.app.filter;
 
-import com.Paul.web.app.security.TokenHandler;
 import com.Paul.web.app.entity.User;
+import com.Paul.web.app.security.TokenHandler;
 import com.Paul.web.app.security.UserAuthentication;
 import com.Paul.web.app.security.UserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;

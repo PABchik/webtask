@@ -1,6 +1,9 @@
 package com.Paul.web.app.entity;
 
+import com.Paul.web.app.entity.serializer.TestSerializer;
+import com.Paul.web.app.entity.serializer.UserSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -21,11 +24,11 @@ public class Group {
 
     private int groupAdminId;
 
-    @JsonIgnore
+    @JsonSerialize(contentUsing = UserSerializer.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     private Set<User> participants;
 
-    @JsonIgnore
+    @JsonSerialize(contentUsing = TestSerializer.class)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             joinColumns = @JoinColumn(name = "group_id"),

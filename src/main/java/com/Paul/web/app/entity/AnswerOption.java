@@ -1,8 +1,10 @@
 package com.Paul.web.app.entity;
 
+import com.Paul.web.app.entity.serializer.TaskSerializer;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -18,7 +20,7 @@ public class AnswerOption {
     @JsonIgnore
     private boolean isCorrect;
 
-    @JsonIgnore
+    @JsonSerialize(using = TaskSerializer.class)
     @ManyToOne
     @JoinColumn(name = "task")
     private Task task;

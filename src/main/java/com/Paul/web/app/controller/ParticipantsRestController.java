@@ -78,7 +78,6 @@ public class ParticipantsRestController {
             return ResponseEntity.notFound().build();
         }
         user = organisationService.deleteGroupAdmin(user);
-        user = userService.hideInfo(user);
         return ResponseEntity.ok(user);
     }
 
@@ -92,7 +91,6 @@ public class ParticipantsRestController {
             return ResponseEntity.notFound().build();
         }
         user = organisationService.deleteTestManager(user);
-        user = userService.hideInfo(user);
         return ResponseEntity.ok(user);
     }
 

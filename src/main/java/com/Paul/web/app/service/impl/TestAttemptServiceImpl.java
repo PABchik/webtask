@@ -4,6 +4,7 @@ import com.Paul.web.app.entity.TestAttempt;
 import com.Paul.web.app.entity.User;
 import com.Paul.web.app.exception.BuisnessException;
 import com.Paul.web.app.repository.TestAttemptRepository;
+import com.Paul.web.app.repository.TestRepository;
 import com.Paul.web.app.service.TestAttemptService;
 import com.Paul.web.app.service.TestService;
 import com.Paul.web.app.service.UserService;
@@ -24,6 +25,9 @@ public class TestAttemptServiceImpl implements TestAttemptService {
 
     @Autowired
     TestAttemptRepository testAttemptRepository;
+
+    @Autowired
+    TestRepository testRepository;
 
     @Transactional
     @Override
@@ -53,5 +57,10 @@ public class TestAttemptServiceImpl implements TestAttemptService {
     public TestAttempt findById(int attemptId) {
 
         return testAttemptRepository.findById(attemptId);
+    }
+
+    @Override
+    public Set<TestAttempt> getTestManagerTestAttempts(int testId) {
+        return testAttemptRepository.findByTestManagerId(testRepository.findById(testId).getManagerId().getId());
     }
 }

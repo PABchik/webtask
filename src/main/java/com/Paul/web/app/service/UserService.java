@@ -22,5 +22,5 @@ public interface UserService {
 
     User leftOrganisation(User user);
 
-    User hideInfo(User user);
+
 }

@@ -2,7 +2,6 @@ package com.Paul.web.app.service;
 
 import com.Paul.web.app.entity.Organisation;
 import com.Paul.web.app.entity.User;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Set;
 

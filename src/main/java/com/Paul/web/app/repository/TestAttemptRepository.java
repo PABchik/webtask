@@ -1,5 +1,6 @@
 package com.Paul.web.app.repository;
 
+import com.Paul.web.app.entity.Test;
 import com.Paul.web.app.entity.TestAttempt;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,8 @@ public interface TestAttemptRepository extends JpaRepository<TestAttempt, Intege
     Set<TestAttempt> getStudentTestAttempts(@Param("studentId") int studentId, @Param("testId") int testId);
 
     TestAttempt findById(int attemptId);
+
+    @Query(value = "select * from test_attempt left join test on test.id = test_attempt.id",
+            nativeQuery = true)
+    Set<TestAttempt> findByTestManagerId(int testManagerId);
 }

@@ -16,4 +16,6 @@ public interface TestService {
     Set<Test> findAllOrgTests(String token);
 
     Test assignTest(Group group, Test test);
+
+    Set<Test> findAllUserTests();
 }

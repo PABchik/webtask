@@ -1,5 +1,9 @@
 package com.Paul.web.app.entity;
 
+import com.Paul.web.app.entity.serializer.TestSerializer;
+import com.Paul.web.app.entity.serializer.UserSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -12,10 +16,12 @@ public class TestAttempt {
     private int attemptNumber;
 
     @ManyToOne
+    @JsonSerialize(using = UserSerializer.class)
     @JoinColumn(name = "student")
     private User student;
 
     @ManyToOne
+    @JsonSerialize(using = TestSerializer.class)
     @JoinColumn(name = "test")
     private Test test;
 

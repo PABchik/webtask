@@ -4,7 +4,6 @@ import com.Paul.web.app.entity.Role;
 import com.Paul.web.app.entity.User;
 import com.Paul.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
@@ -32,7 +31,7 @@ public class CustomMethodSecurityExpressionRoot
 
 //        MyUserPrincipal mupr = new MyUserPrincipal(new User());
 
-//        User user = ((MyUserPrincipal)this.getPrincipal()).getUser();
+//        User user = ((MyUserPrincipal)this.getPrincipal()).getWebUser();
         User user = userService.getCurrentUser();
         boolean hasRoleUser = false;
         for (Role role : user.getUserRoles()) {
